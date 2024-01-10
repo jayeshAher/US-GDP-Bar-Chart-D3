@@ -51,34 +51,35 @@ document.addEventListener('DOMContentLoaded', function() {
                        .append("rect")
                        .attr("x", d => xScale(d[0]))
                        .attr("y", d => yScale(d[1]))
-                       .attr("width", (w - 2 * padding) / dataset.length) //equal space for each data point
+                       .attr("width", (w - 2 * padding) / dataset.length) //equal space for each data point to fit in chart
                        .attr("height", d => h - padding - yScale(d[1]))
                        .attr("fill", "steelblue")
-                       .attr("data-date", d => formatDate(d[0])) //actual date
-                       .attr("data-gdp", d => d[1]) //actual gdp
+                       .attr("data-date", d => formatDate(d[0])) //unscaled (actual) date
+                       .attr("data-gdp", d => d[1]) //unscaled (actual) gdp
                        .attr("class", "bar");
       
-        const tooltip = d3.select("#chart")
-          .append("div")
-          .attr("class", "tooltip")
-          .attr("id", "tooltip")
-          .style("display", "none");
+      const tooltip = d3.select("#chart")
+                        .append("div")
+                        .attr("class", "tooltip")
+                        .attr("id", "tooltip")
+                        .style("display", "none"); //hidden tooltip by default
   
-        // Mouse move function
-        svg.selectAll("rect")
-           .on("mouseover", function(event, d) {
-              const xPos = xScale(d[0]);
-              const yPos = yScale(d[1]);
+      // Mouse move function
+      svg.selectAll("rect")
+         .on("mouseover", function(event, d) {
+            //current (x, y) coordinates of scaled data values
+            const xPos = xScale(d[0]);
+            const yPos = yScale(d[1]);
   
-              tooltip
-                .attr("data-date", formatDate(d[0]))
-                .style("display", "block")
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY - 50}px`)
-                .html(`<strong>Date:</strong> ${formatDate(d[0])}<br><strong>GDP: $</strong> ${d[1]} Billion`);
-           })
-           .on("mouseout", function() {
-              tooltip.style("display", "none");
-           });    
-    });
-  });
+            tooltip
+               .attr("data-date", formatDate(d[0]))
+               .style("display", "block") //display visible tooltip
+               .style("left", `${event.pageX + 10}px`)
+               .style("top", `${event.pageY - 50}px`)
+               .html(`<strong>Date:</strong> ${formatDate(d[0])}<br><strong>GDP: $</strong> ${d[1]} Billion`);
+         })
+         .on("mouseout", function() {
+            tooltip.style("display", "none"); //hide tooltip
+         });    
+   });
+});
